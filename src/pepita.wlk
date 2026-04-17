@@ -1,5 +1,4 @@
 import wollok.game.*
-import extras.*
 
 object pepita {
 
@@ -18,6 +17,7 @@ object pepita {
 	method energia() {
 		return energia
 	}
+	method position() = position
 
 	method atrapada() = position == silvestre.position()
 
@@ -29,4 +29,19 @@ object pepita {
 		}
 	}
 	// method pepitaGris(){ image = "pepita-gris.png" }
+}
+
+object silvestre {
+    
+    var property position = game.at(3,0)
+
+    method image() = "silvestre.png"
+
+    method position(){
+        if (pepita.position().x() < 3){
+            return game.at(3, 0)
+        } else {
+            return game.at(pepita.position().x(), 0)
+        }
+    }
 }
