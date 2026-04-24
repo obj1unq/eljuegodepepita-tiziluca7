@@ -3,6 +3,7 @@ import comidas.*
 // import niveles.*
 import extras.*
 import wollok.game.*
+import direcciones.*
 
 program PepitaGame {
 	game.title("Pepita")
@@ -10,7 +11,20 @@ program PepitaGame {
 	game.width(10)
 	game.boardGround("fondo2.jpg")
 
-  game.addVisualCharacter(pepita)
   game.addVisual(silvestre)
+  game.addVisual(manzana)
+  game.addVisual(alpiste)
+  game.addVisual(pepita)
+
+  keyboard.up().onPressDo    { pepita.mover(arriba)}
+  keyboard.left().onPressDo  { pepita.mover(izquierda)}
+  keyboard.right().onPressDo { pepita.mover(derecha)}
+  keyboard.down().onPressDo  { pepita.mover(abajo)}
+
+  keyboard.c().onPressDo {
+	pepita.comer(game.uniqueCollider(pepita))
+	game.removeVisual(game.uniqueCollider(pepita))
+	}
+  game.onTick(0800, "caida", {pepita.position().down(1)} )
 	game.start()
 }
