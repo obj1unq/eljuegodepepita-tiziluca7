@@ -3,16 +3,20 @@ import direcciones.*
 import extras.*
 object pepita {
 
-	var energia = 1000
+	var energia = 100
 	var property position = game.at(0, 0)
 	var perseguidor = silvestre
 
-	method comer(comida) {
-		energia = energia + comida.energiaQueOtorga()
-		self.eliminarAca()
+	method init(){
+		var energia = 100
+		position = game.at(0,0)
+		var perseguidor = silvestre
 	}
 
-	method eliminarAca() = game.removeVisual(game.uniqueCollider(self))
+	method comer(comida) {
+		energia = energia + comida.energiaQueOtorga()
+		game.removeVisual(game.uniqueCollider(self))
+	}
 
 	method volar(kms) {
 		energia = energia - (kms * 9)
@@ -22,16 +26,15 @@ object pepita {
 		return energia
 	}
 
-	method sinEnergia() = energia <= 0
+	method sinEnergia() = energia <= 9
 
 	method text() = "\n\n\n" + "energia " + energia
+
 	method textColor() = "F2F527E6"
 
 	method image() = "pepita-" + self.estado() + ".png"
 	
-	method estado(){
-		return if (self.atrapada() || self.sinEnergia()) "gris" else "libre"
-	}
+	method estado(){ return if (self.atrapada() || self.sinEnergia()) "gris" else "libre" }
 
 	method atrapada() = self.position() == perseguidor.position()
 
@@ -40,33 +43,37 @@ object pepita {
 	method mover(direccion) {
 
     	var antiguaPosicion = self.position()
+		var nuevaPosicion = direccion.nuevaPosicion(antiguaPosicion)
 
-    	if (!self.estaGris()) {
+    	if (!self.estaGris() && self.puedeMoverA(nuevaPosicion)) {
 
-        	var nuevaPosicion = direccion.nuevaPosicion(antiguaPosicion)
 			position = nuevaPosicion
-
-        if (game.colliders(self).any({ cualquierCosa => !self.esAtravesable(cualquierCosa) })) {
-            position = antiguaPosicion
-        	} else {
-            self.volar(1)
-        	}
-    	}
+			self.volar(1)
+		}
+		else if (self.sinEnergia()){
+			self.perder()
+		}
 	}
 	
 	method caer() {
 
     	var antiguaPosicion = self.position()
+		var nuevaPosicion = antiguaPosicion.down(1)
 
-    	if (self.position().y() >= 1) {
+    	if (self.position().y() >= 1 && self.puedeMoverA(nuevaPosicion)) {
 
-        	var nuevaPosicion = antiguaPosicion.down(1)
         	position = nuevaPosicion
+		}
+	}
 
-        if (game.colliders(self).any({ cualquierCosa => !self.esAtravesable(cualquierCosa) })) {
-            position = antiguaPosicion
-        	}
-    	}
+	method puedeMoverA(nuevaPosicion){
+
+		var antiguaPosicion = self.position()
+		position = nuevaPosicion
+		var sePuedeMover = (game.colliders(self).any({ cualquierCosa => !self.esAtravesable(cualquierCosa) }))
+		position = antiguaPosicion
+		
+		return !sePuedeMover
 	}
 
 	method esAtravesable(cualquierCosa){
