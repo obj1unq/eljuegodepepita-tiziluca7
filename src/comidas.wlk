@@ -1,9 +1,10 @@
 import wollok.game.*
+import pepita.*
 
 object manzana {
 
 	const base = 5
-	var madurez = 1
+	var madurez = 2
 	var property position = game.at(4, 6)
 
 	method energiaQueOtorga() {
@@ -25,4 +26,3 @@ object alpiste {
 	}
 	method image() = "alpiste.png"
 }
-

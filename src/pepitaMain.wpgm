@@ -7,24 +7,29 @@ import direcciones.*
 
 program PepitaGame {
 	game.title("Pepita")
-	game.height(10)
-	game.width(10)
+	game.height(12)
+	game.width(24)
 	game.boardGround("fondo2.jpg")
 
   game.addVisual(silvestre)
   game.addVisual(manzana)
   game.addVisual(alpiste)
+  game.addVisual(muro1)
+  game.addVisual(muro2)
+  game.addVisual(nido)
   game.addVisual(pepita)
 
   keyboard.up().onPressDo    { pepita.mover(arriba)}
   keyboard.left().onPressDo  { pepita.mover(izquierda)}
   keyboard.right().onPressDo { pepita.mover(derecha)}
   keyboard.down().onPressDo  { pepita.mover(abajo)}
+  
+  game.onCollideDo(manzana, {alguien => alguien.comer(manzana)})
+  game.onCollideDo(alpiste, {alguien => alguien.comer(alpiste)})
+  game.onCollideDo(silvestre, {alguien => alguien.perder()})
+  game.onCollideDo(nido,    { alguien => alguien.ganar()})
 
-  keyboard.c().onPressDo {
-	pepita.comer(game.uniqueCollider(pepita))
-	game.removeVisual(game.uniqueCollider(pepita))
-	}
-  game.onTick(0800, "caida", {pepita.position().down(1)} )
+  
+  game.onTick(800, "caida", {pepita.caer()})
 	game.start()
 }
