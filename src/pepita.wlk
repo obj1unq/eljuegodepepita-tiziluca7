@@ -3,23 +3,32 @@ import direcciones.*
 import extras.*
 object pepita {
 
-	var energia = 100
+	var energia = 10000
 	var property position = game.at(0, 0)
 	var perseguidor = silvestre
 
 	method init(){
-		var energia = 100
+
+		energia = 10000
 		position = game.at(0,0)
-		var perseguidor = silvestre
 	}
 
 	method comer(comida) {
+		try {
+			self.obtener(comida)
+		} catch e{
+			// nada
+		}
+	}
+
+	method obtener(comida){
 		energia = energia + comida.energiaQueOtorga()
 		game.removeVisual(game.uniqueCollider(self))
 	}
 
 	method volar(kms) {
-		energia = energia - (kms * 9)
+		
+		if (self.sinEnergia()) self.perder() else energia = energia - (kms * 9)
 	}
 
 	method energia() {
@@ -50,15 +59,11 @@ object pepita {
 			position = nuevaPosicion
 			self.volar(1)
 		}
-		else if (self.sinEnergia()){
-			self.perder()
-		}
 	}
 	
 	method caer() {
 
-    	var antiguaPosicion = self.position()
-		var nuevaPosicion = antiguaPosicion.down(1)
+		var nuevaPosicion = position.down(1)
 
     	if (self.position().y() >= 1 && self.puedeMoverA(nuevaPosicion)) {
 
@@ -85,11 +90,13 @@ object pepita {
 	}
 
 	method perder(){
-		game.say(self, "PERDÍ")
+		game.removeTickEvent("gravedad")
+		game.say(self, "¡PERDÍ!")
 		game.schedule(2000, { game.stop() })
 	}
 	method ganar(){
-		game.say(self, "GANÉ")
+		game.removeTickEvent("gravedad")
+		game.say(self, "¡GANÉ!")
 		game.schedule(2000, {game.stop()})
 	}
 }
