@@ -1,0 +1,16 @@
+import pepita.*
+import comidas.*
+import niveles.*
+import extras.*
+import wollok.game.*
+import direcciones.*
+
+program PepitaGame {
+	game.title("Pepita")
+	game.height(12)
+	game.width(24)
+	game.boardGround("fondo2.jpg")
+
+  nivel1.init()
+	game.start()
+}
